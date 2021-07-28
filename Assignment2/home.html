@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: black;
+      }
+      #box {
+        width: 20%;
+        height: 200px;
+        margin-left: 40%;
+        padding: 20px;
+        border: 1px solid white;
+      }
+      #enterMovie {
+        width: 200px;
+        height: 40px;
+        margin-left: 18%;
+        border-radius: 5px;
+      }
+      #searchbutt {
+        /* margin-left: 50%;
+        margin-top: 20px; */
+        width: 80px;
+        height: 30px;
+        margin-left: 40%;
+        margin-top: 20px;
+      }
+      #showData h3,
+      #showData p {
+        color: white;
+      }
+      #showData {
+        display: grid;
+        grid-template-columns: repeat(3, 30%);
+        gap: 5%;
+        margin-top: 20px;
+        margin-left: 20px;
+      }
+      .container {
+        width: 400px;
+        border: 1px solid white;
+      }
+      .container h3,
+      .container p,
+      .container img {
+        text-align: center;
+      }
+      .container img {
+        margin-left: 40px;
+        width: 300px;
+        height: 444px;
+      }
+      #error img {
+        width: 200px;
+        height: 220px;
+        margin-left: 45%;
+        margin-top: 20px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box">
+      <input type="text" placeholder="Enter Movie Name" id="enterMovie" /><br />
+      <button id="searchbutt" onclick="moviesData()">Search</button>
+    </div>
+    <div id="error"></div>
+    <div id="showData"></div>
+  </body>
+</html>
+<script>
+  async function moviesData() {
+    let error_div = document.getElementById("error");
+    error_div.innerHTML = null;
+    let data_div = document.getElementById("showData");
+    let div = document.createElement("div");
+    div.setAttribute("class", "container");
+    div.innerHTML = null;
+    let movie = document.getElementById("enterMovie").value;
+    let name = document.createElement("h3");
+    let date = document.createElement("p");
+    let rating = document.createElement("p");
+    let actor = document.createElement("p");
+    let director = document.createElement("p");
+    let poster = document.createElement("img");
+
+    try {
+      var res = await fetch(
+        `http://www.omdbapi.com/?t=${movie}&apikey=30dcba07`
+      );
+      let data = await res.json();
+      if (data.Title == undefined) {
+        let img = document.createElement("img");
+        img.src = "https://media1.giphy.com/media/8L0Pky6C83SzkzU55a/giphy.gif";
+        error_div.append(img);
+      } else {
+        name.textContent = data.Title;
+        date.textContent = `Release Date:- ${data.Released}`;
+        rating.textContent = `Imdb Rating:- ${data.imdbRating}`;
+        actor.textContent = `Actors:- ${data.Actors}`;
+        director.textContent = `Director:- ${data.Director}`;
+
+        poster.src = data.Poster;
+
+        div.append(name, date, rating, actor, director, poster);
+        data_div.append(div);
+        console.log(data);
+      }
+    } catch (err) {}
+  }
+</script>
